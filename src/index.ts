@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { 
@@ -12,6 +13,9 @@ import {
   miniSearch,
   MediaContentTypes,
 } from './data/search.js';
+
+dotenv.config();
+const port: number = Number.parseInt(process.env.PORT) || 4000;
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -82,7 +86,7 @@ const server = new ApolloServer({
 //  2. installs your ApolloServer instance as middleware
 //  3. prepares your app to handle incoming requests
 const { url } = await startStandaloneServer(server, {
-  listen: { port: 4000 },
+  listen: { port: port },
 });
 
 console.log(`🚀  Server ready at: ${url}`);
