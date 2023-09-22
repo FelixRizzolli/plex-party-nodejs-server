@@ -1,35 +1,73 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import movies from './data/movies.js';
-import tvshows from './data/tvshows.js';
+import { 
+  getMovies, 
+  getRecentlyAddedMovies,
+} from './data/movies.js';
+import { 
+  getRecentlyAddedTVShows, 
+  getTVShows, 
+} from './data/tvshows.js';
+import {
+  miniSearch,
+  MediaContentTypes,
+} from './data/search.js';
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
 // your data.
 const typeDefs = `
-  type Movie {
-    title: String
-    year: String
-    tvdbID: Int
+  union MediaContent = Movie | TVShow
+  scalar Date
+  
+  type MiniSearch {
+    fromPlex: [MediaContent]
+    fromTVDB: [MediaContent]
   }
 
-  type TVShow {
+  type Movie{
+    _type: String
     title: String
     year: String
     tvdbID: Int
+    added: Date
+  }
+
+  type TVShow{
+    _type: String
+    title: String
+    year: String
+    tvdbID: Int
+    added: Date
   }
 
   type Query {
     movies: [Movie]
     tvshows: [TVShow]
+    recentlyAddedMovies: [Movie]
+    recentlyAddedTVShows: [TVShow]
+    miniSearch: MiniSearch
   }
 `;
 
 const resolvers = {
   Query: {
-    movies: () => movies,
-    tvshows: () => tvshows,
+    movies: () => getMovies(),
+    tvshows: () => getTVShows(),
+    recentlyAddedMovies: () => getRecentlyAddedMovies(),
+    recentlyAddedTVShows: () => getRecentlyAddedTVShows(),
+    miniSearch: () => miniSearch(),
   },
+  MediaContent: {
+    __resolveType(obj) {
+      switch (obj._type) {
+        case MediaContentTypes.MOVIE:
+          return 'Movie';
+        case MediaContentTypes.TVSHOW:
+          return 'Movie';
+      }
+    }
+  }
 };
 
 // The ApolloServer constructor requires two parameters: your schema
