@@ -15,9 +15,11 @@
   },
   "dependencies": {
     "@apollo/server": "^4.9.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "graphql": "^16.8.0",
+    "http": "^0.0.1-security",
     "tsx": "^3.12.10"
   },
   "devDependencies": {
