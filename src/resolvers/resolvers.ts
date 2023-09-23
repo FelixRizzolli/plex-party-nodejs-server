@@ -1,5 +1,4 @@
 import { 
-  getMovies, 
   getRecentlyAddedMovies,
 } from '../data/movies.js';
 import { 
@@ -10,10 +9,13 @@ import {
   miniSearch,
   MediaContentTypes,
 } from '../data/search.js';
+import {
+  Movie
+} from '../models/MediaContent.js'
 
 const resolvers = {
   Query: {
-    movies: () => getMovies(),
+    movies: () => Movie.getMovies(),
     tvshows: () => getTVShows(),
     recentlyAddedMovies: () => getRecentlyAddedMovies(),
     recentlyAddedTVShows: () => getRecentlyAddedTVShows(),
@@ -27,6 +29,7 @@ const resolvers = {
         case MediaContentTypes.TVSHOW:
           return 'Movie';
       }
+      return null; // GraphQLError is thrown
     }
   }
 };

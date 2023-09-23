@@ -9,6 +9,7 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 
 import typeDefs from './schema/typedefs.js';
 import resolvers from './resolvers/resolvers.js';
+import { connectToDatabase } from './datasources/mongodb.js';
 
 dotenv.config();
 const port: number = Number.parseInt(process.env.PORT) || 4000;
@@ -35,5 +36,9 @@ app.use(
   }),
 );
 
-await new Promise<void>((resolve) => httpServer.listen({ port: port }, resolve));
-console.log(`🚀 Server ready at http://localhost:${port}/`);
+connectToDatabase(async (error) => {
+  if (!error) {
+    await new Promise<void>((resolve) => httpServer.listen({ port: port }, resolve));
+    console.log(`🚀 Server ready at http://localhost:${port}/`);
+  }
+});

@@ -10,7 +10,7 @@ const tvshows: TVShow[] = [
     year: '2015',
     tvdbID: 272644,
     added: new Date("2023-09-19"),
-    fromPlex: true,
+    onPlex: true,
   },
   {
     _type: 'TVSHOW',
@@ -18,7 +18,7 @@ const tvshows: TVShow[] = [
     year: '2020',
     tvdbID: 370312,
     added: new Date("2023-09-16"),
-    fromPlex: true,
+    onPlex: true,
   },
   {
     _type: 'TVSHOW',
@@ -47,7 +47,7 @@ const tvshows: TVShow[] = [
     year: '2010',
     tvdbID: 153021,
     added: new Date("2023-09-18"),
-    fromPlex: true
+    onPlex: true
   },
   {
     _type: 'TVSHOW',
@@ -80,7 +80,7 @@ export function searchTVShows(): TVShow[] {
 export function miniSearchTVShows(): MiniSearch {
   return {
     "fromPlex": tvshows
-                  .filter((tvshow: TVShow) => (tvshow.fromPlex))
+                  .filter((tvshow: TVShow) => (tvshow.onPlex))
                   .sort((a: TVShow, b: TVShow) => {
                     if (a.title > b.title) return -1;
                     if (a.title < b.title) return 1;
@@ -88,7 +88,7 @@ export function miniSearchTVShows(): MiniSearch {
                   })
                   .slice(0, 5),
     "fromTVDB": tvshows
-                  .filter((tvshow: TVShow) => (!tvshow.fromPlex))
+                  .filter((tvshow: TVShow) => (!tvshow.onPlex))
                   .sort((a: TVShow, b: TVShow) => {
                     if (a.title > b.title) return -1;
                     if (a.title < b.title) return 1;

@@ -9,7 +9,7 @@ export interface MediaContent {
     year: string,
     tvdbID: number,
     added: Date,
-    fromPlex?: boolean,
+    onPlex?: boolean,
 }
 
 export interface Movie extends MediaContent { }

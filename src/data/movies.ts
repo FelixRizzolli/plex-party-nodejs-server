@@ -10,7 +10,7 @@ const movies: Movie[] = [
     year: '2012',
     tvdbID: 628,
     added: new Date("2023-09-19"),
-    fromPlex: true,
+    onPlex: true,
   },
   {
     _type: 'MOVIE',
@@ -60,7 +60,7 @@ const movies: Movie[] = [
     year: '2017',
     tvdbID: 511,
     added: new Date("2023-09-20"),
-    fromPlex: true,
+    onPlex: true,
   },
   {
     _type: 'MOVIE',
@@ -68,7 +68,7 @@ const movies: Movie[] = [
     year: '2019',
     tvdbID: 6494,
     added: new Date("2023-09-15"),
-    fromPlex: true,
+    onPlex: true,
   },
 ];
 
@@ -89,7 +89,7 @@ export function getRecentlyAddedMovies(): Movie[] {
 export function miniSearchMovies(): MiniSearch {
   return {
     "fromPlex": movies
-                  .filter((movie: Movie) => (movie.fromPlex))
+                  .filter((movie: Movie) => (movie.onPlex))
                   .sort((a: Movie, b: Movie) => {
                     if (a.title > b.title) return -1;
                     if (a.title < b.title) return 1;
@@ -97,7 +97,7 @@ export function miniSearchMovies(): MiniSearch {
                   })
                   .slice(0, 5),
     "fromTVDB": movies
-                  .filter((movie: Movie) => (!movie.fromPlex))
+                  .filter((movie: Movie) => (!movie.onPlex))
                   .sort((a: Movie, b: Movie) => {
                     if (a.title > b.title) return -1;
                     if (a.title < b.title) return 1;
