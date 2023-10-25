@@ -1,3 +1,4 @@
+export default `
 type Query {
   movies: [Movie]
   tvshows: [TVShow]
@@ -7,3 +8,4 @@ type Query {
 }
 
 scalar Date
+`;

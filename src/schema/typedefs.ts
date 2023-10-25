@@ -1,9 +1,12 @@
 import { GraphQLSchema } from 'graphql/type/schema';
-import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
-import { loadSchemaSync } from '@graphql-tools/load';
+import { mergeTypeDefs } from '@graphql-tools/merge';
+import { buildSchema, print } from 'graphql';
 
-const typeDefs: GraphQLSchema = loadSchemaSync('./**/*.graphql', {
-  loaders: [new GraphQLFileLoader()]
-});
+import mediacontent from './mediacontent';
+import query from './query';
+
+const schemas: string[] = [ mediacontent, query ];
+
+const typeDefs: GraphQLSchema = buildSchema(print(mergeTypeDefs(schemas)));
 
 export default typeDefs;

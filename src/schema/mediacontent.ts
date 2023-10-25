@@ -1,3 +1,4 @@
+export default `
 union MediaContent = Movie | TVShow
 
 type MiniSearch {
@@ -20,3 +21,4 @@ type TVShow{
   tvdbID: Int
   added: Date
 }
+`;
