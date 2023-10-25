@@ -6,6 +6,10 @@ import cors from 'cors';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { 
+  ApolloServerPluginLandingPageLocalDefault, 
+  ApolloServerPluginLandingPageProductionDefault
+} from '@apollo/server/plugin/landingPage/default';
 
 import typeDefs from './schema/typedefs.js';
 import resolvers from './resolvers/resolvers.js';
@@ -18,27 +22,39 @@ interface MyContext {
   token?: String;
 }
 
-const app = express();
-const httpServer = http.createServer(app);
-const server = new ApolloServer<MyContext>({
-  typeDefs,
-  resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-});
+const main = async (port: number) => {
+  const app = express();
+  const httpServer = http.createServer(app);
+  const server = new ApolloServer<MyContext>({
+    typeDefs,
+    resolvers,
+    plugins: [
+      (() => {
+        if (process.env.NODE_ENV === 'production') {
+          return ApolloServerPluginLandingPageProductionDefault();
+        }
+        return ApolloServerPluginLandingPageLocalDefault();
+      })(),
+      ApolloServerPluginDrainHttpServer({ httpServer })
+    ],
+  });
+  
+  await server.start();
+  app.use(
+    '/',
+    cors<cors.CorsRequest>(),
+    json(),
+    expressMiddleware(server, {
+      context: async ({ req }) => ({ token: req.headers.token }),
+    }),
+  );
+  
+  connectToDatabase(async (error) => {
+    if (!error) {
+      await new Promise<void>((resolve) => httpServer.listen({ port: port }, resolve));
+      console.log(`🚀 Server ready at http://localhost:${port}/`);
+    }
+  });
+}
 
-await server.start();
-app.use(
-  '/',
-  cors<cors.CorsRequest>(),
-  json(),
-  expressMiddleware(server, {
-    context: async ({ req }) => ({ token: req.headers.token }),
-  }),
-);
-
-connectToDatabase(async (error) => {
-  if (!error) {
-    await new Promise<void>((resolve) => httpServer.listen({ port: port }, resolve));
-    console.log(`🚀 Server ready at http://localhost:${port}/`);
-  }
-});
+main(port);
