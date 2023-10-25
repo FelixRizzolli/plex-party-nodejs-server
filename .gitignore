@@ -42,3 +42,4 @@ packages/server/src/generated/packageVersion.ts
 
 # Lets you add more env vars.
 .env
+.vercel
