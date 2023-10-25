@@ -22,39 +22,37 @@ interface MyContext {
   token?: String;
 }
 
-const main = async (port: number) => {
-  const app = express();
-  const httpServer = http.createServer(app);
-  const server = new ApolloServer<MyContext>({
-    typeDefs,
-    resolvers,
-    plugins: [
-      (() => {
-        if (process.env.NODE_ENV === 'production') {
-          return ApolloServerPluginLandingPageProductionDefault();
-        }
-        return ApolloServerPluginLandingPageLocalDefault();
-      })(),
-      ApolloServerPluginDrainHttpServer({ httpServer })
-    ],
-  });
-  
-  await server.start();
-  app.use(
-    '/',
-    cors<cors.CorsRequest>(),
-    json(),
-    expressMiddleware(server, {
-      context: async ({ req }) => ({ token: req.headers.token }),
-    }),
-  );
-  
-  connectToDatabase(async (error) => {
-    if (!error) {
-      await new Promise<void>((resolve) => httpServer.listen({ port: port }, resolve));
-      console.log(`🚀 Server ready at http://localhost:${port}/`);
-    }
-  });
-}
+const app = express();
+const httpServer = http.createServer(app);
+const server = new ApolloServer<MyContext>({
+  typeDefs,
+  resolvers,
+  plugins: [
+    (() => {
+      if (process.env.NODE_ENV === 'production') {
+        return ApolloServerPluginLandingPageProductionDefault();
+      }
+      return ApolloServerPluginLandingPageLocalDefault();
+    })(),
+    ApolloServerPluginDrainHttpServer({ httpServer })
+  ],
+});
 
-main(port);
+await server.start();
+app.use(
+  '/',
+  cors<cors.CorsRequest>(),
+  json(),
+  expressMiddleware(server, {
+    context: async ({ req }) => ({ token: req.headers.token }),
+  }),
+);
+
+connectToDatabase(async (error) => {
+  if (!error) {
+    await new Promise<void>((resolve) => httpServer.listen({ port: port }, resolve));
+    console.log(`🚀 Server ready at http://localhost:${port}/`);
+  }
+});
+
+module.exports = app;
