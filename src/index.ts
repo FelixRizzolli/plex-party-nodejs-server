@@ -55,4 +55,4 @@ connectToDatabase(async (error) => {
   }
 });
 
-export default app;
+module.exports = app;
